@@ -10,5 +10,3 @@ Verilog.
 A hierarchical Verilog implementation of a 12-hour digital clock
 with seconds, minutes, hours and AM/PM indication.
 
-[View Project](./12-hour-clock)
-
