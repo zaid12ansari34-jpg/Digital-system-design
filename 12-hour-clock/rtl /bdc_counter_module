@@ -1,0 +1,43 @@
+module bcd_decade_counter ( 
+    input clk, 
+    input reset, 
+    input ena, 
+    input [3:0] reset_val_l, 
+    input [3:0] reset_val_h, 
+    input [3:0] max_val_l, 
+    input [3:0] max_val_h, 
+    input [3:0] reset_max_l, 
+    input [3:0] reset_max_h,
+    input hour_mode,
+    output next, 
+    output reg [7:0] q
+); 
+
+    assign next = ena && ((q[3:0] == max_val_l && q[7:4] == max_val_h) || (hour_mode && q == 8'h12));
+    
+    always @(posedge clk) begin 
+        if (reset) begin 
+            q[3:0] <= reset_val_l; 
+            q[7:4] <= reset_val_h;
+        end 
+        else if (ena) begin 
+            if (hour_mode && q == 8'h12) begin
+                q[3:0] <= 4'd1;
+                q[7:4] <= 4'd0;
+            end
+            else if ((q[3:0] == max_val_l) && 
+                     (q[7:4] == max_val_h)) begin 
+                q[3:0] <= reset_max_l; 
+                q[7:4] <= reset_max_h; 
+            end 
+            else if (q[3:0] == max_val_l) begin 
+                q[3:0] <= 4'd0; 
+                q[7:4] <= q[7:4] + 4'd1; 
+            end 
+            else begin 
+                q[3:0] <= q[3:0] + 4'd1; 
+            end 
+        end 
+    end 
+
+endmodule
